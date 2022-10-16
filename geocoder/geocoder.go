@@ -1,4 +1,10 @@
 // Census geocoder.
+//
+// TODO:
+// - structured address input (street, city, zip)
+// - coordinate input (x, y)
+// - batch uploads
+// - custom geography layers
 package geocoder
 
 import (
