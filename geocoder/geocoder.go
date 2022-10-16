@@ -52,6 +52,8 @@ type AddressMatch struct {
   } `json:"addressComponents"`
 
   MatchedAddress string `json:"matchedAddress"`
+
+  Geographies map[string][]map[string]any `json:"geographies"`
 }
 
 // Census geocoder.
@@ -200,6 +202,43 @@ func (g Geocoder) Locations(address string) ([]AddressMatch, error) {
   return g.LocationsFromBenchmark(address, DefaultBenchmark)
 }
 
+// Get locations and geography layers for given street address,
+// benchmark, and vintage from geocoder.
+//
+// Example: https://geocoding.geo.census.gov/geocoder/geographies/address?street=4600+Silver+Hill+Rd&city=Washington&state=DC&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json
+func (g Geocoder) Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
+  var r struct {
+    Result struct {
+      AddressMatches []AddressMatch `json:"addressMatches"`
+    } `json:"result"`
+
+		Errors []string `json:"errors"`
+  }
+
+  // send request, decode response
+  err := g.get("geographies/onelineaddress", map[string]string {
+    "address": address,
+    "benchmark": benchmark,
+    "vintage": vintage,
+    "format": "json",
+  }, func(d *json.Decoder) error {
+    return d.Decode(&r)
+  })
+
+  // check for request errors
+  if err != nil {
+    return []AddressMatch{}, err
+  }
+
+  // check for errors in decoded response
+  if len(r.Errors) > 0 {
+    return []AddressMatch{}, errors.New(r.Errors[0])
+  }
+
+  // return result
+  return r.Result.AddressMatches, nil
+}
+
 // Get benchmarks from default geocoder.
 func Benchmarks() ([]Benchmark, error) {
   return DefaultGeocoder.Benchmarks()
@@ -219,4 +258,10 @@ func LocationsFromBenchmark(address, benchmarkId string) ([]AddressMatch, error)
 // Get locations matching street address from default geocoder.
 func Locations(address string) ([]AddressMatch, error) {
   return DefaultGeocoder.Locations(address)
+}
+
+// Get locations and geography layers for given street address,
+// benchmark, and vintage from default geocoder.
+func Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
+  return DefaultGeocoder.Geographies(address, benchmark, vintage)
 }
