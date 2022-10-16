@@ -137,8 +137,9 @@ func (g Geocoder) Vintages(benchmarkId string) ([]Vintage, error) {
   }
 
   // send request, parse response
-  args := map[string]string { "benchmark": benchmarkId }
-  err := g.get("vintages", args, func(d *json.Decoder) error {
+  err := g.get("vintages", map[string]string {
+    "benchmark": benchmarkId,
+  }, func(d *json.Decoder) error {
     return d.Decode(&r)
   })
 
