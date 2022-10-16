@@ -1,3 +1,4 @@
+// Census geocoder.
 package geocoder
 
 import (
@@ -8,7 +9,6 @@ import (
 )
 
 // Benchmark from Benchmarks()
-// Example: https://geocoding.geo.census.gov/geocoder/benchmarks
 type Benchmark struct {
   Id string `json:"id"`
   Name string `json:"benchmarkName"`
@@ -17,7 +17,6 @@ type Benchmark struct {
 }
 
 // Vintage from Vintages().
-// Example: https://geocoding.geo.census.gov/geocoder/vintages?benchmark=4
 type Vintage struct {
   Id string `json:"id"`
   Name string `json:"vintageName"`
@@ -26,7 +25,6 @@ type Vintage struct {
 }
 
 // Address match result from Locations().
-// Example: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=4600+Silver+Hill+Rd%2C+Washington%2C+DC+20233&benchmark=2020&format=json
 type AddressMatch struct {
   TigerLine struct {
     Id string `json:"tigerLineId"`
@@ -101,6 +99,8 @@ func (g Geocoder) get(path string, args map[string]string, cb func(*json.Decoder
 
 
 // Get benchmarks from geocoder.
+//
+// Example: https://geocoding.geo.census.gov/geocoder/benchmarks
 func (g Geocoder) Benchmarks() ([]Benchmark, error) {
   var r struct {
     Benchmarks []Benchmark `json:"benchmarks"`
@@ -128,6 +128,8 @@ func (g Geocoder) Benchmarks() ([]Benchmark, error) {
 }
 
 // Get vintages matching benchmark ID from default geocoder.
+//
+// Example: https://geocoding.geo.census.gov/geocoder/vintages?benchmark=4
 func (g Geocoder) Vintages(benchmarkId string) ([]Vintage, error) {
   var r struct {
     Vintages []Vintage `json:"vintages"`
@@ -155,6 +157,8 @@ func (g Geocoder) Vintages(benchmarkId string) ([]Vintage, error) {
 }
 
 // Get locations matching street address and benchmark ID from geocoder.
+//
+// Example: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=4600+Silver+Hill+Rd%2C+Washington%2C+DC+20233&benchmark=2020&format=json
 func (g Geocoder) LocationsFromBenchmark(address, benchmarkId string) ([]AddressMatch, error) {
   var r struct {
     Result struct {
