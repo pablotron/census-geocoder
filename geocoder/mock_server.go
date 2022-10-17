@@ -28,13 +28,22 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
     w.Write(mockVintages)
   })
 
-  mockAddressMatches, err := os.ReadFile("testdata/responses/address-matches.json")
+  mockLocations, err := os.ReadFile("testdata/responses/locations.json")
   if err != nil {
     return nil, nil, err
   }
 
   mux.HandleFunc("/locations/onelineaddress", func(w http.ResponseWriter, r *http.Request) {
-    w.Write(mockAddressMatches)
+    w.Write(mockLocations)
+  })
+
+  mockGeographies, err := os.ReadFile("testdata/responses/geographies.json")
+  if err != nil {
+    return nil, nil, err
+  }
+
+  mux.HandleFunc("/geographies/onelineaddress", func(w http.ResponseWriter, r *http.Request) {
+    w.Write(mockGeographies)
   })
 
   // create mock server
