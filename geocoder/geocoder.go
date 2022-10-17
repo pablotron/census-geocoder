@@ -165,7 +165,8 @@ func (g Geocoder) Vintages(benchmarkId string) ([]Vintage, error) {
   return r.Vintages, nil
 }
 
-// Get locations matching street address and benchmark ID from geocoder.
+// Geocode street address with given benchmark ID return address
+// matches.
 //
 // Example: https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=4600+Silver+Hill+Rd%2C+Washington%2C+DC+20233&benchmark=2020&format=json
 func (g Geocoder) LocationsFromBenchmark(address, benchmarkId string) ([]AddressMatch, error) {
@@ -203,13 +204,13 @@ func (g Geocoder) LocationsFromBenchmark(address, benchmarkId string) ([]Address
 // Default benchmark ID.
 var DefaultBenchmark = "Public_AR_Current"
 
-// Get locations matching street address from geocoder.
+// Geocode street address and return address matches.
 func (g Geocoder) Locations(address string) ([]AddressMatch, error) {
   return g.LocationsFromBenchmark(address, DefaultBenchmark)
 }
 
-// Get locations and geography layers for given street address,
-// benchmark, and vintage from geocoder.
+// Geocode street address using  given benchmark and given vintage, then
+// return address matches with geography layers.
 //
 // Example: https://geocoding.geo.census.gov/geocoder/geographies/address?street=4600+Silver+Hill+Rd&city=Washington&state=DC&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json
 func (g Geocoder) Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
@@ -255,19 +256,20 @@ func Vintages(benchmarkId string) ([]Vintage, error) {
   return DefaultGeocoder.Vintages(benchmarkId)
 }
 
-// Get locations matching street address and benchmark ID from default
-// geocoder.
+// Geocode street address with given benchmark ID using default geocoder
+// and return address matches.
 func LocationsFromBenchmark(address, benchmarkId string) ([]AddressMatch, error) {
   return DefaultGeocoder.LocationsFromBenchmark(address, benchmarkId)
 }
 
-// Get locations matching street address from default geocoder.
+// Geocode street address using default geocoder and return address
+// matches.
 func Locations(address string) ([]AddressMatch, error) {
   return DefaultGeocoder.Locations(address)
 }
 
-// Get locations and geography layers for given street address,
-// benchmark, and vintage from default geocoder.
+// Geocode street address using default geocoder, given benchmark, and
+// given vintage, then return address matches with geography layers.
 func Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
   return DefaultGeocoder.Geographies(address, benchmark, vintage)
 }
