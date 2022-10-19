@@ -2,6 +2,7 @@ package geocoder
 
 import (
   "fmt"
+  "math"
 )
 
 // Batch geocoder output row.
@@ -59,4 +60,20 @@ func NewBatchOutputRow(row []string) (BatchOutputRow, error) {
     Coordinates: matchCoords,
     TigerLine: matchLine,
   }, nil
+}
+
+// Compare two batch output rows and return true if they are equal.
+//
+// Note: the coordinates values compare as equal if they are less than
+// 0.001 degrees apart.
+func compareBatchOutputRow(a, b BatchOutputRow) bool {
+  return a.Id == b.Id &&
+         a.InputAddress == b.InputAddress &&
+         a.Match == b.Match &&
+         a.Exact == b.Exact &&
+         a.MatchAddress == b.MatchAddress &&
+         math.Abs(a.Coordinates.X - b.Coordinates.X) < 0.001 &&
+         math.Abs(a.Coordinates.Y - b.Coordinates.Y) < 0.001 &&
+         a.TigerLine.Id == b.TigerLine.Id &&
+         a.TigerLine.Side == b.TigerLine.Side
 }
