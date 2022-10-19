@@ -371,6 +371,10 @@ func TestGeocoderBatchLocations(t *testing.T) {
 }
 
 func TestBatchLocations(t *testing.T) {
+  if testing.Short() {
+    t.Skip("skipping in short mode")
+  }
+
   // get input rows
   rows := getBatchInputRows(t)
 
