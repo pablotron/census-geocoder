@@ -306,6 +306,35 @@ func TestGeocoderBatchLocationsFromBenchmark(t *testing.T) {
   }
 }
 
+func TestBatchLocationsFromBenchmark(t *testing.T) {
+  if testing.Short() {
+    t.Skip("skipping in short mode")
+  }
+
+  // get input and expected output
+  rows := getBatchInputRows(t)
+
+  // get expected output, build map
+  expRows := getBatchOutputRows(t)
+  exp := make(map[string]BatchOutputRow)
+  for _, row := range(expRows) {
+    exp[row.Id] = row
+  }
+
+  // send rows, check for error
+  gotRows, err := BatchLocationsFromBenchmark(rows, testBenchmarkId)
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // compare against expected rows
+  for _, row := range(gotRows) {
+    if !compareBatchOutputRow(row, exp[row.Id]) {
+      t.Fatalf("%s: got %v, exp %v", row.Id, row, exp[row.Id])
+    }
+  }
+}
+
 func TestGeocoderBatchLocations(t *testing.T) {
   // get input and expected output
   rows := getBatchInputRows(t)
@@ -328,13 +357,40 @@ func TestGeocoderBatchLocations(t *testing.T) {
   gc := NewGeocoder(url)
 
   // send rows, check for error
-  got, err := gc.BatchLocations(rows)
+  gotRows, err := gc.BatchLocations(rows)
   if err != nil {
     t.Fatal(err)
   }
 
-  // compare against expected value
-  if !reflect.DeepEqual(got, exp) {
-    t.Fatalf("got %v, exp %v", got, exp)
+  // compare against expected rows
+  for _, row := range(gotRows) {
+    if !compareBatchOutputRow(row, exp[row.Id]) {
+      t.Fatalf("%s: got %v, exp %v", row.Id, row, exp[row.Id])
+    }
+  }
+}
+
+func TestBatchLocations(t *testing.T) {
+  // get input rows
+  rows := getBatchInputRows(t)
+
+  // get expected output, build map
+  expRows := getBatchOutputRows(t)
+  exp := make(map[string]BatchOutputRow)
+  for _, row := range(expRows) {
+    exp[row.Id] = row
+  }
+
+  // send rows, check for error
+  gotRows, err := BatchLocations(rows)
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // compare against expected rows
+  for _, row := range(gotRows) {
+    if !compareBatchOutputRow(row, exp[row.Id]) {
+      t.Fatalf("%s: got %v, exp %v", row.Id, row, exp[row.Id])
+    }
   }
 }
