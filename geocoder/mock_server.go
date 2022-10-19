@@ -46,6 +46,15 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
     w.Write(mockGeographies)
   })
 
+  mockBatchLocations, err := os.ReadFile("testdata/responses/batch-locations.csv")
+  if err != nil {
+    return nil, nil, err
+  }
+
+  mux.HandleFunc("/locations/addressbatch", func(w http.ResponseWriter, r *http.Request) {
+    w.Write(mockBatchLocations)
+  })
+
   // create mock server
   server := httptest.NewServer(mux)
 
