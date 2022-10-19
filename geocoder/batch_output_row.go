@@ -1,5 +1,9 @@
 package geocoder
 
+import (
+  "fmt"
+)
+
 // Batch geocoder output row.
 type BatchOutputRow struct {
   // unique row ID
@@ -31,8 +35,12 @@ type BatchOutputRow struct {
 
 // Create batch output row from CSV row.
 func NewBatchOutputRow(row []string) (BatchOutputRow, error) {
+  if len(row) < 3 {
+    return BatchOutputRow{}, fmt.Errorf("invalid batch output row: %#v", row)
+  }
+
   match := (row[2] == "Match")
-  exact := (row[2] == "Match" && row[3] == "Exact")
+  exact := (row[2] == "Match") && (len(row) > 3) && (row[3] == "Exact")
   matchAddress := ""
   var matchCoords Coordinates
   var matchLine TigerLine

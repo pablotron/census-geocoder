@@ -13,7 +13,9 @@ type BatchInputReader struct {
 
 // Create batch CSV reader.
 func NewBatchInputReader(r io.Reader) BatchInputReader {
-  return BatchInputReader { csv.NewReader(r) }
+  cr := csv.NewReader(r)
+  cr.FieldsPerRecord = -1
+  return BatchInputReader { cr }
 }
 
 // Parse all rows in CSV as BatchInputRow items.
@@ -28,7 +30,7 @@ func (me BatchInputReader) ReadAll() ([]BatchInputRow, error) {
   }
 
   // populate result
-  r := make([]BatchInputRow, 0, len(rows))
+  r := make([]BatchInputRow, len(rows))
   for i, row := range(rows) {
     r[i] = BatchInputRow { row[0], row[1], row[2], row[3], row[4] }
   }

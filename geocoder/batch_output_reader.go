@@ -13,7 +13,9 @@ type BatchOutputReader struct {
 
 // Create batch CSV reader.
 func NewBatchOutputReader(r io.Reader) BatchOutputReader {
-  return BatchOutputReader { csv.NewReader(r) }
+  cr := csv.NewReader(r)
+  cr.FieldsPerRecord = -1
+  return BatchOutputReader { cr }
 }
 
 // Parse CSV rows as BatchOutputRow items.
@@ -25,9 +27,9 @@ func (me BatchOutputReader) ReadAll() ([]BatchOutputRow, error) {
   }
 
   // populate result
-  r := make([]BatchOutputRow, 0, len(rows))
-  for i, row := range(rows) {
-    if outRow, err := NewBatchOutputRow(row); err != nil {
+  r := make([]BatchOutputRow, len(rows))
+  for i := range(rows) {
+    if outRow, err := NewBatchOutputRow(rows[i]); err != nil {
       return []BatchOutputRow{}, err
     } else {
       r[i] = outRow
