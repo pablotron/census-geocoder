@@ -249,38 +249,42 @@ func (g Geocoder) Geographies(address, benchmark, vintage string) ([]AddressMatc
 
 // Encode batch input rows and field values as multipart body and write
 // it to the given writer.
-func createBatchBody(w io.Writer, rows []BatchInputRow, fields map[string]string) error {
+func createBatchBody(w io.Writer, rows []BatchInputRow, fields map[string]string) (string, error) {
   // create multipart writer
   mw := multipart.NewWriter(w)
 
   // populate form fields
   for k, v := range(fields) {
     if err := mw.WriteField(k, v); err != nil {
-      return err
+      return "", err
     }
   }
 
   // attach address file
   f, err := mw.CreateFormFile("addressFile", "input.csv")
   if err != nil {
-    return err
+    return "", err
   }
 
   // write input rows to multipart writer as CSV
   biw := NewBatchInputWriter(f)
   if err := biw.WriteAll(rows); err != nil {
-    return err
+    return "", err
   }
 
+  // get content type
+  contentType := mw.FormDataContentType()
+
   // close multipart writer
-  return mw.Close()
+  return contentType, mw.Close()
 }
 
 // Upload batch of input addresses to batch geocoder.
 func (g Geocoder) batchUpload(path string, fields map[string]string, rows []BatchInputRow) (io.ReadCloser, error) {
   // populate buffer with multipart-encoded request body
   var buf bytes.Buffer
-  if err := createBatchBody(&buf, rows, fields); err != nil {
+  contentType, err := createBatchBody(&buf, rows, fields)
+  if err != nil {
     return nil, err
   }
 
@@ -294,7 +298,7 @@ func (g Geocoder) batchUpload(path string, fields map[string]string, rows []Batc
   }
 
   // set request headers
-  req.Header.Add("Content-Type", "multipart/form-data")
+  req.Header.Add("Content-Type", contentType)
 
   // send request
   var client http.Client
