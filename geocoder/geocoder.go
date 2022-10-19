@@ -30,17 +30,15 @@ type Vintage struct {
   Default bool `json:"isDefault"`
 }
 
+type TigerLine struct {
+  Id string `json:"tigerLineId"`
+  Side string `json:"side"`
+}
+
 // Address match result from Locations().
 type AddressMatch struct {
-  TigerLine struct {
-    Id string `json:"tigerLineId"`
-    Side string `json:"side"`
-  } `json:"tigerLine"`
-
-  Coordinates struct {
-    X float64 `json:"x"`
-    Y float64 `json:"y"`
-  } `json:"coordinates"`
+  TigerLine TigerLine `json:"tigerLine"`
+  Coordinates Coordinates `json:"coordinates"`
 
   AddressComponents struct {
     Zip string `json:"zip"`
