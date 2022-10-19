@@ -3,6 +3,7 @@ package geocoder
 import (
   _ "embed"
   "encoding/json"
+  "os"
   "reflect"
   "testing"
 )
@@ -239,5 +240,95 @@ func TestGeographies(t *testing.T) {
   _, err := Geographies(testAddress, testBenchmark, testVintage)
   if err != nil {
     t.Fatal(err)
+  }
+}
+
+func getBatchInputRows(t *testing.T) []BatchInputRow {
+  // open input file
+  f, err := os.Open("testdata/data/batch-input.csv")
+  if err != nil {
+    t.Fatal(err)
+  }
+  defer f.Close()
+
+  // read rows
+  rows, err := NewBatchInputReader(f).ReadAll()
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // return rows
+  return rows
+}
+
+func getBatchOutputRows(t *testing.T) []BatchOutputRow {
+  // open input file
+  f, err := os.Open("testdata/data/batch-output.csv")
+  if err != nil {
+    t.Fatal(err)
+  }
+  defer f.Close()
+
+  // read rows
+  rows, err := NewBatchOutputReader(f).ReadAll()
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // return rows
+  return rows
+}
+
+func TestGeocoderBatchLocationsFromBenchmark(t *testing.T) {
+  // get input and expected output
+  rows := getBatchInputRows(t)
+  exp := getBatchOutputRows(t)
+
+  // create mock server
+  ms, url, err := newMockServer()
+  if err != nil {
+    t.Fatal(err)
+  }
+  defer ms.Close()
+
+  // create geocoder
+  gc := NewGeocoder(url)
+
+  // send rows, check for error
+  got, err := gc.BatchLocationsFromBenchmark(rows, testBenchmarkId)
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // compare against expected value
+  if !reflect.DeepEqual(got, exp) {
+    t.Fatalf("got %v, exp %v", got, exp)
+  }
+}
+
+func TestGeocoderBatchLocations(t *testing.T) {
+  // get input and expected output
+  rows := getBatchInputRows(t)
+  exp := getBatchOutputRows(t)
+
+  // create mock server
+  ms, url, err := newMockServer()
+  if err != nil {
+    t.Fatal(err)
+  }
+  defer ms.Close()
+
+  // create geocoder
+  gc := NewGeocoder(url)
+
+  // send rows, check for error
+  got, err := gc.BatchLocations(rows)
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // compare against expected value
+  if !reflect.DeepEqual(got, exp) {
+    t.Fatalf("got %v, exp %v", got, exp)
   }
 }
