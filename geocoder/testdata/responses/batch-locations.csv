@@ -1,0 +1,5 @@
+"2022","2525 buckelew dr, falls church, va, 22046","Match","Exact","2525 BUCKELEW DR, FALLS CHURCH, VA, 22046","-77.19902696899999,38.88701576700004","75978299","L"
+"2000","222 nw 14th corvallis or, , , ","Match","Non_Exact","222 NW 14TH ST, CORVALLIS, OR, 97330","-123.27156825499998,44.56853142400007","155847121","L"
+"2010","3444 gallows rd, annandale, , ","Match","Exact","3444 GALLOWS RD, ANNANDALE, VA, 22003","-77.21245851999998,38.850814882000066","75973084","R"
+"id","address, city, state, zip","No_Match"
+"2020","7309 carol ln, falls church, va, ","Match","Exact","7309 CAROL LN, FALLS CHURCH, VA, 22042","-77.19817875199999,38.86071449600007","75979948","L"
