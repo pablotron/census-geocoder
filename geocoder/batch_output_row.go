@@ -22,15 +22,9 @@ type BatchOutputRow struct {
   MatchAddress string `json:"match_address"`
 
   // lat/long
-  Coordinates struct {
-    X float64 `json:"x"` // longitude
-    Y float64 `json:"y"` // latitude
-  } `json:"coordinates"`
+  Coordinates Coordinates `json:"coordinates"`
 
-  TigerLine struct {
-    Id string `json:"tigerLineId"`
-    Side string `json:"side"`
-  } `json:"tigerLine"`
+  TigerLine TigerLine `json:"tigerLine"`
 }
 
 // Create batch output row from CSV row.
