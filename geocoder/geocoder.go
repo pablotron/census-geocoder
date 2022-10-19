@@ -8,8 +8,11 @@
 package geocoder
 
 import (
+  "bytes"
   "encoding/json"
   "errors"
+  "io"
+  "mime/multipart"
   "net/http"
   net_url "net/url"
 )
@@ -244,6 +247,99 @@ func (g Geocoder) Geographies(address, benchmark, vintage string) ([]AddressMatc
   return r.Result.AddressMatches, nil
 }
 
+// Encode batch input rows and field values as multipart body and write
+// it to the given writer.
+func createBatchBody(w io.Writer, rows []BatchInputRow, fields map[string]string) error {
+  // create multipart writer
+  mw := multipart.NewWriter(w)
+
+  // populate form fields
+  for k, v := range(fields) {
+    if err := mw.WriteField(k, v); err != nil {
+      return err
+    }
+  }
+
+  // attach address file
+  f, err := mw.CreateFormFile("addressFile", "input.csv")
+  if err != nil {
+    return err
+  }
+
+  // write input rows to multipart writer as CSV
+  biw := NewBatchInputWriter(f)
+  if err := biw.WriteAll(rows); err != nil {
+    return err
+  }
+
+  // close multipart writer
+  return mw.Close()
+}
+
+// Upload batch of input addresses to batch geocoder.
+func (g Geocoder) batchUpload(path string, fields map[string]string, rows []BatchInputRow) (io.ReadCloser, error) {
+  // populate buffer with multipart-encoded request body
+  var buf bytes.Buffer
+  if err := createBatchBody(&buf, rows, fields); err != nil {
+    return nil, err
+  }
+
+  // build url
+  url := g.url.JoinPath(path)
+
+  // create request
+  req, err := http.NewRequest("POST", url.String(), &buf)
+  if err != nil {
+    return nil, err
+  }
+
+  // set request headers
+  req.Header.Add("Content-Type", "multipart/form-data")
+
+  // send request
+  var client http.Client
+  resp, err := client.Do(req)
+  if err != nil {
+    return nil, err
+  }
+
+  // return response body
+  return resp.Body, nil
+}
+
+func (g Geocoder) BatchLocationsFromBenchmark(rows []BatchInputRow, benchmark string) ([]BatchOutputRow, error) {
+  fields := map[string]string { "benchmark": benchmark }
+
+  body, err := g.batchUpload("locations/addressbatch", fields, rows)
+  if err != nil {
+    return []BatchOutputRow{}, err
+  }
+  defer body.Close()
+
+  // read rows from response
+  return NewBatchOutputReader(body).ReadAll()
+}
+
+func (g Geocoder) BatchLocations(rows []BatchInputRow) ([]BatchOutputRow, error) {
+  return g.BatchLocationsFromBenchmark(rows, DefaultBenchmark)
+}
+
+func (g Geocoder) BatchGeographies(rows []BatchInputRow, benchmark, vintage string) ([]BatchOutputRow, error) {
+  fields := map[string]string {
+    "benchmark": benchmark,
+    "vintage": vintage,
+  }
+
+  body, err := g.batchUpload("geographies/addressbatch", fields, rows)
+  if err != nil {
+    return []BatchOutputRow{}, err
+  }
+  defer body.Close()
+
+  // read rows from response
+  return NewBatchOutputReader(body).ReadAll()
+}
+
 // Get benchmarks from default geocoder.
 func Benchmarks() ([]Benchmark, error) {
   return DefaultGeocoder.Benchmarks()
@@ -270,4 +366,16 @@ func Locations(address string) ([]AddressMatch, error) {
 // given vintage, then return address matches with geography layers.
 func Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
   return DefaultGeocoder.Geographies(address, benchmark, vintage)
+}
+
+func BatchLocationsFromBenchmark(rows []BatchInputRow, benchmark string) ([]BatchOutputRow, error) {
+  return DefaultGeocoder.BatchLocationsFromBenchmark(rows, benchmark)
+}
+
+func BatchLocations(rows []BatchInputRow) ([]BatchOutputRow, error) {
+  return DefaultGeocoder.BatchLocations(rows)
+}
+
+func BatchGeographies(rows []BatchInputRow, benchmark, vintage string) ([]BatchOutputRow, error) {
+  return DefaultGeocoder.BatchGeographies(rows, benchmark, vintage)
 }
