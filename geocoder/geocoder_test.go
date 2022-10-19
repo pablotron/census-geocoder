@@ -7,25 +7,6 @@ import (
   "testing"
 )
 
-// func TestNewGeocoder(t *testing.T) {
-//   t.Run("valid_url", func(t *testing.T) {
-//     // create geocoder
-//     if _, err := NewGeocoder(DefaultUrl); err != nil {
-//       t.Fatal(err)
-//     }
-//   })
-// 
-//   t.Run("invalid_url", func(t *testing.T) {
-//     badUrl := "lkfsa\\dad"
-// 
-//     // create geocoder
-//     gc, err := NewGeocoder(badUrl)
-//     if err != nil {
-//       t.Fatalf("got %v, exp error", gc)
-//     }
-//   })
-// }
-
 //go:embed testdata/data/benchmarks.json
 var mockBenchmarksJson []byte
 
