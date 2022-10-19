@@ -309,7 +309,13 @@ func TestGeocoderBatchLocationsFromBenchmark(t *testing.T) {
 func TestGeocoderBatchLocations(t *testing.T) {
   // get input and expected output
   rows := getBatchInputRows(t)
-  exp := getBatchOutputRows(t)
+
+  // get expected output, build map
+  expRows := getBatchOutputRows(t)
+  exp := make(map[string]BatchOutputRow)
+  for _, row := range(expRows) {
+    exp[row.Id] = row
+  }
 
   // create mock server
   ms, url, err := newMockServer()
