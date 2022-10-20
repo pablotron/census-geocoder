@@ -5,7 +5,7 @@ import (
   "fmt"
   "log"
   "os"
-  "pmdn.org/census-geocoder/geocoder"
+  "pablotron.org/census-geocoder/geocoder"
 )
 
 func main() {
