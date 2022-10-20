@@ -59,7 +59,11 @@ type AddressMatch struct {
 
 // Census geocoder.
 type Geocoder struct {
-  url *net_url.URL
+  // base API URL
+  Url *net_url.URL
+
+  // shared HTTP client
+  Client http.Client
 }
 
 // Parsed default geocoder URL.
@@ -70,17 +74,17 @@ var DefaultUrl = &net_url.URL{
 }
 
 // Default geocoder.
-var DefaultGeocoder = Geocoder { DefaultUrl }
+var DefaultGeocoder = Geocoder { Url: DefaultUrl }
 
 // Create new geocoder from parsed URL.
 func NewGeocoder(url *net_url.URL) Geocoder {
-  return Geocoder { url }
+  return Geocoder { Url: url }
 }
 
 // Build request, send to API endpoint, and parse response.
 func (g Geocoder) get(path string, args map[string]string, cb func(*json.Decoder) error) error {
   // build url
-  url := g.url.JoinPath(path)
+  url := g.Url.JoinPath(path)
 
   // build query parameters
   q := net_url.Values{}
@@ -90,7 +94,7 @@ func (g Geocoder) get(path string, args map[string]string, cb func(*json.Decoder
   url.RawQuery = q.Encode()
 
   // fetch response
-  resp, err := http.Get(url.String())
+  resp, err := g.Client.Get(url.String())
   if err != nil {
     return err
   }
@@ -283,7 +287,7 @@ func (g Geocoder) batchUpload(rows []BatchInputRow, returnType string, fields ma
   }
 
   // build url
-  url := g.url.JoinPath(returnType, "addressbatch")
+  url := g.Url.JoinPath(returnType, "addressbatch")
 
   // create request
   req, err := http.NewRequest("POST", url.String(), &buf)
@@ -295,8 +299,7 @@ func (g Geocoder) batchUpload(rows []BatchInputRow, returnType string, fields ma
   req.Header.Add("Content-Type", contentType)
 
   // send request
-  var client http.Client
-  resp, err := client.Do(req)
+  resp, err := g.Client.Do(req)
   if err != nil {
     return []BatchOutputRow{}, err
   }
