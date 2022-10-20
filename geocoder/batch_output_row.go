@@ -25,7 +25,20 @@ type BatchOutputRow struct {
   // lat/long
   Coordinates Coordinates `json:"coordinates"`
 
+  // tiger line data
   TigerLine TigerLine `json:"tigerLine"`
+
+  // State ID (only populated if `returntype = geographies`).
+  State string
+
+  // County ID (only populated if `returntype = geographies`).
+  County string
+
+  // tract (only populated if `returntype = geographies`).
+  Tract string
+
+  // block ID (only populated if `returntype = geographies`).
+  Block string
 }
 
 // Create batch output row from CSV row.
@@ -36,9 +49,15 @@ func NewBatchOutputRow(row []string) (BatchOutputRow, error) {
 
   match := (row[2] == "Match")
   exact := (row[2] == "Match") && (len(row) > 3) && (row[3] == "Exact")
+
   matchAddress := ""
   var matchCoords Coordinates
   var matchLine TigerLine
+  matchState := ""
+  matchCounty := ""
+  matchTract := ""
+  matchBlock := ""
+
   if match {
     matchAddress = row[4]
 
@@ -49,6 +68,13 @@ func NewBatchOutputRow(row []string) (BatchOutputRow, error) {
     }
 
     matchLine = TigerLine { row[6], row[7] }
+
+    if len(row) > 11 {
+      matchState = row[8]
+      matchCounty = row[9]
+      matchTract = row[10]
+      matchBlock = row[11]
+    }
   }
 
   return BatchOutputRow {
@@ -59,6 +85,10 @@ func NewBatchOutputRow(row []string) (BatchOutputRow, error) {
     MatchAddress: matchAddress,
     Coordinates: matchCoords,
     TigerLine: matchLine,
+    State: matchState,
+    County: matchCounty,
+    Tract: matchTract,
+    Block: matchBlock,
   }, nil
 }
 
@@ -75,5 +105,9 @@ func compareBatchOutputRow(a, b BatchOutputRow) bool {
          math.Abs(a.Coordinates.X - b.Coordinates.X) < 0.001 &&
          math.Abs(a.Coordinates.Y - b.Coordinates.Y) < 0.001 &&
          a.TigerLine.Id == b.TigerLine.Id &&
-         a.TigerLine.Side == b.TigerLine.Side
+         a.TigerLine.Side == b.TigerLine.Side &&
+         a.State == b.State &&
+         a.County == b.County &&
+         a.Tract == b.Tract &&
+         a.Block == b.Block
 }
