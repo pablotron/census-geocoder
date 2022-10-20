@@ -1,23 +1,24 @@
+// minimal address geocoder
 package main
 
 import (
   "fmt"
   "log"
-  "pmdn.org/census-geocoder/geocoder"
   "os"
+  "pmdn.org/census-geocoder/geocoder"
 )
 
 func main() {
   for _, arg := range(os.Args[1:]) {
-    // get addresses
-    addresses, err := geocoder.Locations(arg)
+    // get address matches
+    matches, err := geocoder.Locations(arg)
     if err != nil {
       log.Fatal(err)
     }
 
-    // print addresses
-    for _, address := range(addresses) {
-      fmt.Println(address)
+    // print matches
+    for _, match := range(matches) {
+      fmt.Println(match)
     }
   }
 }
