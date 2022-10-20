@@ -398,3 +398,59 @@ func TestBatchLocations(t *testing.T) {
     }
   }
 }
+
+func TestGeocoderBatchGeographies(t *testing.T) {
+  // get input and expected output
+  rows := getBatchInputRows(t)
+  exp := getBatchOutputRows(t, "testdata/data/batch-output-geographies-2020-2020.csv")
+
+  // create mock server
+  ms, url, err := newMockServer()
+  if err != nil {
+    t.Fatal(err)
+  }
+  defer ms.Close()
+
+  // create geocoder
+  gc := NewGeocoder(url)
+
+  // send rows, check for error
+  got, err := gc.BatchGeographies(rows, "2020", "2020")
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // compare against expected value
+  if !reflect.DeepEqual(got, exp) {
+    t.Fatalf("got %v, exp %v", got, exp)
+  }
+}
+
+func TestBatchGeographies(t *testing.T) {
+  if testing.Short() {
+    t.Skip("skipping in short mode")
+  }
+
+  // get input and expected output
+  rows := getBatchInputRows(t)
+
+  // get expected output, build map
+  expRows := getBatchOutputRows(t, "testdata/data/batch-output-geographies-2020-2020.csv")
+  exp := make(map[string]BatchOutputRow)
+  for _, row := range(expRows) {
+    exp[row.Id] = row
+  }
+
+  // send rows, check for error
+  gotRows, err := BatchGeographies(rows, "2020", "2020")
+  if err != nil {
+    t.Fatal(err)
+  }
+
+  // compare against expected rows
+  for _, row := range(gotRows) {
+    if !compareBatchOutputRow(row, exp[row.Id]) {
+      t.Fatalf("%s: got %v, exp %v", row.Id, row, exp[row.Id])
+    }
+  }
+}
