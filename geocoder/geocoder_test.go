@@ -261,9 +261,9 @@ func getBatchInputRows(t *testing.T) []BatchInputRow {
   return rows
 }
 
-func getBatchOutputRows(t *testing.T) []BatchOutputRow {
+func getBatchOutputRows(t *testing.T, path string) []BatchOutputRow {
   // open input file
-  f, err := os.Open("testdata/data/batch-output.csv")
+  f, err := os.Open(path)
   if err != nil {
     t.Fatal(err)
   }
@@ -282,7 +282,7 @@ func getBatchOutputRows(t *testing.T) []BatchOutputRow {
 func TestGeocoderBatchLocationsFromBenchmark(t *testing.T) {
   // get input and expected output
   rows := getBatchInputRows(t)
-  exp := getBatchOutputRows(t)
+  exp := getBatchOutputRows(t, "testdata/data/batch-output-locations-2020.csv")
 
   // create mock server
   ms, url, err := newMockServer()
@@ -315,7 +315,7 @@ func TestBatchLocationsFromBenchmark(t *testing.T) {
   rows := getBatchInputRows(t)
 
   // get expected output, build map
-  expRows := getBatchOutputRows(t)
+  expRows := getBatchOutputRows(t, "testdata/data/batch-output-locations-2020.csv")
   exp := make(map[string]BatchOutputRow)
   for _, row := range(expRows) {
     exp[row.Id] = row
@@ -340,7 +340,7 @@ func TestGeocoderBatchLocations(t *testing.T) {
   rows := getBatchInputRows(t)
 
   // get expected output, build map
-  expRows := getBatchOutputRows(t)
+  expRows := getBatchOutputRows(t, "testdata/data/batch-output-locations-2020.csv")
   exp := make(map[string]BatchOutputRow)
   for _, row := range(expRows) {
     exp[row.Id] = row
@@ -379,7 +379,7 @@ func TestBatchLocations(t *testing.T) {
   rows := getBatchInputRows(t)
 
   // get expected output, build map
-  expRows := getBatchOutputRows(t)
+  expRows := getBatchOutputRows(t, "testdata/data/batch-output-locations-2020.csv")
   exp := make(map[string]BatchOutputRow)
   for _, row := range(expRows) {
     exp[row.Id] = row
