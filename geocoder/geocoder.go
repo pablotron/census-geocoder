@@ -309,16 +309,29 @@ func (g Geocoder) batchUpload(rows []BatchInputRow, returnType string, fields ma
   return NewBatchOutputReader(resp.Body).ReadAll()
 }
 
+// Batch geocode street addresses with given benchmark then return
+// matches.
 func (g Geocoder) BatchLocationsFromBenchmark(rows []BatchInputRow, benchmark string) ([]BatchOutputRow, error) {
   return g.batchUpload(rows, "locations", map[string]string {
     "benchmark": benchmark,
   })
 }
 
+// Batch geocode street addresses then return matches.
 func (g Geocoder) BatchLocations(rows []BatchInputRow) ([]BatchOutputRow, error) {
   return g.BatchLocationsFromBenchmark(rows, DefaultBenchmark)
 }
 
+// Batch geocode street addresses with given benchmark and vintage then
+// return matches with additional geography fields.
+//
+// The additional BatchOutputRow fields populated by this method
+// compared to `BatchLocationsFromBenchmark()` are as follows:
+//
+// - State
+// - County
+// - Tract
+// - Block
 func (g Geocoder) BatchGeographies(rows []BatchInputRow, benchmark, vintage string) ([]BatchOutputRow, error) {
   return g.batchUpload(rows, "geographies", map[string]string {
     "benchmark": benchmark,
@@ -354,14 +367,28 @@ func Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
   return DefaultGeocoder.Geographies(address, benchmark, vintage)
 }
 
+// Batch geocode street addresses with given benchmark using default
+// geocoder then return matches.
 func BatchLocationsFromBenchmark(rows []BatchInputRow, benchmark string) ([]BatchOutputRow, error) {
   return DefaultGeocoder.BatchLocationsFromBenchmark(rows, benchmark)
 }
 
+// Batch geocode street addresses using default geocoder then return
+// matches.
 func BatchLocations(rows []BatchInputRow) ([]BatchOutputRow, error) {
   return DefaultGeocoder.BatchLocations(rows)
 }
 
+// Batch geocode street addresses with given benchmark and vintage using
+// default geocoder then return matches with additional geography fields.
+//
+// The additional BatchOutputRow fields populated by this function
+// compared to `BatchLocationsFromBenchmark()` are as follows:
+//
+// - State
+// - County
+// - Tract
+// - Block
 func BatchGeographies(rows []BatchInputRow, benchmark, vintage string) ([]BatchOutputRow, error) {
   return DefaultGeocoder.BatchGeographies(rows, benchmark, vintage)
 }
