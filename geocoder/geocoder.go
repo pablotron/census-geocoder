@@ -34,26 +34,57 @@ type TigerLine struct {
 
 // Address match result from Locations().
 type AddressMatch struct {
+  // tiger data
   TigerLine TigerLine `json:"tigerLine"`
+
+  // latitude and longitude
   Coordinates Coordinates `json:"coordinates"`
 
+  // matched components
   AddressComponents struct {
+    // zip code
     Zip string `json:"zip"`
+
+    // street name
     StreetName string `json:"streetName"`
+
+    // street prefix type
     PreType string `json:"preType"`
+
+    // city
     City string `json:"city"`
+
+    // prefix direction
     PreDirection string `json:"preDirection"`
+
+    // suffix direction
     SuffixDirection string `json:"suffixDirection"`
+
+    // from address
     FromAddress string `json:"fromAddress"`
+
+    // state
     State string `json:"state"`
+
+    // suffix type
     SuffixType string `json:"suffixType"`
+
+    // to address
     ToAddress string `json:"toAddress"`
+
+    // suffix qualifier
     SuffixQualifier string `json:"suffixQualifier"`
+
+    // prefix qualifier
     PreQualifier string `json:"preQualifier"`
   } `json:"addressComponents"`
 
+  // matched address
   MatchedAddress string `json:"matchedAddress"`
 
+  // map of ID to geography components.
+  //
+  // Note: only populated for calls to `Geographies()`.
   Geographies map[string][]map[string]any `json:"geographies"`
 }
 
