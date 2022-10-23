@@ -108,10 +108,10 @@ func (c Client) Vintages(benchmarkId string) ([]Vintage, error) {
 
 // Geocode street address with given benchmark ID return address
 // matches.
-func (c Client) LocationsFromBenchmark(address, benchmarkId string) ([]AddressMatch, error) {
+func (c Client) LocationsFromBenchmark(address, benchmarkId string) ([]Match, error) {
   var r struct {
     Result struct {
-      AddressMatches []AddressMatch `json:"addressMatches"`
+      Matches []Match `json:"addressMatches"`
     } `json:"result"`
 
 		Errors []string `json:"errors"`
@@ -128,29 +128,29 @@ func (c Client) LocationsFromBenchmark(address, benchmarkId string) ([]AddressMa
 
   // check for request errors
   if err != nil {
-    return []AddressMatch{}, err
+    return []Match{}, err
   }
 
   // check for errors in decoded response
   if len(r.Errors) > 0 {
-    return []AddressMatch{}, errors.New(r.Errors[0])
+    return []Match{}, errors.New(r.Errors[0])
   }
 
   // return result
-  return r.Result.AddressMatches, nil
+  return r.Result.Matches, nil
 }
 
 // Geocode street address and return address matches.
-func (c Client) Locations(address string) ([]AddressMatch, error) {
+func (c Client) Locations(address string) ([]Match, error) {
   return c.LocationsFromBenchmark(address, DefaultBenchmark)
 }
 
 // Geocode street address using  given benchmark and given vintage, then
 // return address matches with geography layers.
-func (c Client) Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
+func (c Client) Geographies(address, benchmark, vintage string) ([]Match, error) {
   var r struct {
     Result struct {
-      AddressMatches []AddressMatch `json:"addressMatches"`
+      Matches []Match `json:"addressMatches"`
     } `json:"result"`
 
 		Errors []string `json:"errors"`
@@ -168,16 +168,16 @@ func (c Client) Geographies(address, benchmark, vintage string) ([]AddressMatch,
 
   // check for request errors
   if err != nil {
-    return []AddressMatch{}, err
+    return []Match{}, err
   }
 
   // check for errors in decoded response
   if len(r.Errors) > 0 {
-    return []AddressMatch{}, errors.New(r.Errors[0])
+    return []Match{}, errors.New(r.Errors[0])
   }
 
   // return result
-  return r.Result.AddressMatches, nil
+  return r.Result.Matches, nil
 }
 
 // Encode batch input rows and field values as multipart body and write

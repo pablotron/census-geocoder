@@ -74,7 +74,7 @@ func TestClientLocationsFromBenchmark(t *testing.T) {
   defer ms.Close()
 
   // decode expected results
-  var exp []AddressMatch
+  var exp []Match
   if err = json.Unmarshal(mockLocationsJson, &exp); err != nil {
     t.Fatal(err)
   }
@@ -103,7 +103,7 @@ func TestClientLocations(t *testing.T) {
   defer ms.Close()
 
   // decode expected results
-  var exp []AddressMatch
+  var exp []Match
   if err = json.Unmarshal(mockLocationsJson, &exp); err != nil {
     t.Fatal(err)
   }
@@ -136,7 +136,7 @@ func TestClientGeographies(t *testing.T) {
   defer ms.Close()
 
   // decode expected results
-  var exp []AddressMatch
+  var exp []Match
   if err = json.Unmarshal(mockGeographiesJson, &exp); err != nil {
     t.Fatal(err)
   }

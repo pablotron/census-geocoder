@@ -50,7 +50,7 @@ func TestLocationsFromBenchmark(t *testing.T) {
   }
 
   // decode expected results
-  var exp []AddressMatch
+  var exp []Match
   if err := json.Unmarshal(mockLocationsJson, &exp); err != nil {
     t.Fatal(err)
   }

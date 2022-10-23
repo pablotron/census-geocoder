@@ -36,8 +36,8 @@ type TigerLine struct {
   Side string `json:"side"`
 }
 
-// Address match result from Locations().
-type AddressMatch struct {
+// Address match result from [Locations()] or [Geographies()].
+type Match struct {
   // tiger data
   TigerLine TigerLine `json:"tigerLine"`
 
