@@ -1,11 +1,19 @@
 package geocoder
 
 import (
+  "log"
   "net/http"
   "net/http/httptest"
   net_url "net/url"
   "os"
 )
+
+// write to response writer, check for error, and log error.
+func logWrite(w http.ResponseWriter, buf []byte) {
+  if _, err := w.Write(buf); err != nil {
+    log.Print(err)
+  }
+}
 
 func newMockServer() (*httptest.Server, *net_url.URL, error) {
   mux := http.NewServeMux()
@@ -16,7 +24,7 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
   }
 
   mux.HandleFunc("/benchmarks", func(w http.ResponseWriter, r *http.Request) {
-    w.Write(mockBenchmarks)
+    logWrite(w, mockBenchmarks)
   })
 
   mockVintages, err := os.ReadFile("testdata/responses/vintages.json")
@@ -25,7 +33,7 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
   }
 
   mux.HandleFunc("/vintages", func(w http.ResponseWriter, r *http.Request) {
-    w.Write(mockVintages)
+    logWrite(w, mockVintages)
   })
 
   mockLocations, err := os.ReadFile("testdata/responses/locations.json")
@@ -34,7 +42,7 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
   }
 
   mux.HandleFunc("/locations/onelineaddress", func(w http.ResponseWriter, r *http.Request) {
-    w.Write(mockLocations)
+    logWrite(w, mockLocations)
   })
 
   mockGeographies, err := os.ReadFile("testdata/responses/geographies.json")
@@ -43,7 +51,7 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
   }
 
   mux.HandleFunc("/geographies/onelineaddress", func(w http.ResponseWriter, r *http.Request) {
-    w.Write(mockGeographies)
+    logWrite(w, mockGeographies)
   })
 
   mockBatchLocations, err := os.ReadFile("testdata/responses/batch-locations-2020.csv")
@@ -52,7 +60,7 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
   }
 
   mux.HandleFunc("/locations/addressbatch", func(w http.ResponseWriter, r *http.Request) {
-    w.Write(mockBatchLocations)
+    logWrite(w, mockBatchLocations)
   })
 
   mockBatchGeographies, err := os.ReadFile("testdata/responses/batch-geographies-2020-2020.csv")
@@ -61,7 +69,7 @@ func newMockServer() (*httptest.Server, *net_url.URL, error) {
   }
 
   mux.HandleFunc("/geographies/addressbatch", func(w http.ResponseWriter, r *http.Request) {
-    w.Write(mockBatchGeographies)
+    logWrite(w, mockBatchGeographies)
   })
 
   // create mock server
