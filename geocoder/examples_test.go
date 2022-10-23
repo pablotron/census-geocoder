@@ -5,12 +5,12 @@ import (
   "log"
 )
 
-func ExampleGeocoder_Benchmarks() {
-  // create geocoder using default geocoder URL
-  g := NewGeocoder(DefaultUrl)
+func ExampleClient_Benchmarks() {
+  // create client using default URL
+  c := NewClient(DefaultUrl)
 
   // get benchmarks
-  benchmarks, err := g.Benchmarks()
+  benchmarks, err := c.Benchmarks()
   if err != nil {
     log.Fatal(err)
   }
@@ -26,12 +26,12 @@ func ExampleGeocoder_Benchmarks() {
   // Public_AR_Census2020
 }
 
-func ExampleGeocoder_Vintages() {
-  // create geocoder using default geocoder URL
-  g := NewGeocoder(DefaultUrl)
+func ExampleClient_Vintages() {
+  // create client using default URL
+  c := NewClient(DefaultUrl)
 
   // get vintages
-  vintages, err := g.Vintages("2020")
+  vintages, err := c.Vintages("2020")
   if err != nil {
     log.Fatal(err)
   }
@@ -46,12 +46,12 @@ func ExampleGeocoder_Vintages() {
   // Census2010_Census2020
 }
 
-func ExampleGeocoder_Locations() {
-  // create geocoder using default geocoder URL
-  g := NewGeocoder(DefaultUrl)
+func ExampleClient_Locations() {
+  // create client using default URL
+  c := NewClient(DefaultUrl)
 
   // get address matches
-  locs, err := g.Locations("3444 gallows rd annandale va 22003")
+  locs, err := c.Locations("3444 gallows rd annandale va 22003")
   if err != nil {
     log.Fatal(err)
   }
@@ -65,12 +65,12 @@ func ExampleGeocoder_Locations() {
   // 3444 GALLOWS RD, ANNANDALE, VA, 22003
 }
 
-func ExampleGeocoder_Geographies() {
-  // create geocoder using default geocoder URL
-  g := NewGeocoder(DefaultUrl)
+func ExampleClient_Geographies() {
+  // create client using default URL
+  c := NewClient(DefaultUrl)
 
   // get address matches with additional geographical information
-  locs, err := g.Geographies("3444 gallows rd annandale va 22003", "2020", "2020")
+  locs, err := c.Geographies("3444 gallows rd annandale va 22003", "2020", "2020")
   if err != nil {
     log.Fatal(err)
   }
