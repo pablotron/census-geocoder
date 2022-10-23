@@ -13,9 +13,16 @@ import (
 
 // Benchmark from Benchmarks()
 type Benchmark struct {
+  // Vintage ID
   Id string `json:"id"`
+
+  // Vintage name
   Name string `json:"benchmarkName"`
+
+  // Vintage description
   Description string `json:"benchmarkDescription"`
+
+  // Is this the default vintage?
   Default bool `json:"isDefault"`
 }
 
@@ -28,7 +35,10 @@ type Vintage struct {
 }
 
 type TigerLine struct {
+  // Line ID
   Id string `json:"tigerLineId"`
+
+  // Line side
   Side string `json:"side"`
 }
 
@@ -97,7 +107,7 @@ type Geocoder struct {
   Client http.Client
 }
 
-// Parsed default geocoder URL.
+// Default Census geocoder URL.
 var DefaultUrl = &net_url.URL{
   Scheme: "https",
   Host: "geocoding.geo.census.gov",
@@ -107,7 +117,7 @@ var DefaultUrl = &net_url.URL{
 // Default geocoder.
 var DefaultGeocoder = Geocoder { Url: DefaultUrl }
 
-// Create new geocoder from parsed URL.
+// Create new geocoder from URL.
 func NewGeocoder(url *net_url.URL) Geocoder {
   return Geocoder { Url: url }
 }
