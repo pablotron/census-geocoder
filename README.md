@@ -1,6 +1,6 @@
 # census-geocoder
 
-[Go][] wrapper for [Census geocoder][].
+[Go][] wrapper for [Census Geocoding Services API][].
 
 ## Installation
 
@@ -39,6 +39,8 @@ func main() {
 }
 ```
 
+This example is also available in the [Git repository][repo] as `main.go`.
+
 ## Documentation
 
 See <https://pkg.go.dev/pablotron.org/census-geocoder/geocoder>
@@ -46,4 +48,6 @@ See <https://pkg.go.dev/pablotron.org/census-geocoder/geocoder>
 [go]: https://go.dev/
   "Go programming language."
 [census geocoder]: https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html
-  "Census geocoding API."
+  "Census Geocoding Services API."
+[repo]: https://github.com/pablotron/census-geocoder
+  "census-geocoder Github repository."
