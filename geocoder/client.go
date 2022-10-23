@@ -10,7 +10,7 @@ import (
   net_url "net/url"
 )
 
-// Census geocoder.
+// Census geocoder client.
 type Client struct {
   // base API URL
   Url *net_url.URL
@@ -19,7 +19,11 @@ type Client struct {
   Client http.Client
 }
 
-// Create new client from URL.
+// Create new geocoder client from URL.
+//
+// Note: This method is primarily for testing.  You should be able to
+// use the top-level functions from the [geocoder] package (e.g.
+// [geocoder.Locations], [geocoder.Geographies], etc).
 func NewClient(url *net_url.URL) Client {
   return Client { Url: url }
 }
@@ -46,7 +50,6 @@ func (c Client) get(path string, args map[string]string, cb func(*json.Decoder) 
   // create decoder from response body, call handler
   return cb(json.NewDecoder(resp.Body))
 }
-
 
 // Get available benchmarks.
 func (c Client) Benchmarks() ([]Benchmark, error) {
