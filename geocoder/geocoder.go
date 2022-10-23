@@ -117,19 +117,19 @@ func Vintages(benchmarkId string) ([]Vintage, error) {
 
 // Geocode street address with given benchmark ID using default client
 // and return address matches.
-func LocationsFromBenchmark(address, benchmarkId string) ([]AddressMatch, error) {
+func LocationsFromBenchmark(address, benchmarkId string) ([]Match, error) {
   return DefaultClient.LocationsFromBenchmark(address, benchmarkId)
 }
 
 // Geocode street address using default client and return address
 // matches.
-func Locations(address string) ([]AddressMatch, error) {
+func Locations(address string) ([]Match, error) {
   return DefaultClient.Locations(address)
 }
 
 // Geocode street address using default client, given benchmark, and
 // given vintage, then return address matches with geography layers.
-func Geographies(address, benchmark, vintage string) ([]AddressMatch, error) {
+func Geographies(address, benchmark, vintage string) ([]Match, error) {
   return DefaultClient.Geographies(address, benchmark, vintage)
 }
 
