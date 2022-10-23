@@ -8,3 +8,6 @@ test:
 
 fulltest:
 	go test ./...
+
+lint:
+	go vet ./... && staticcheck ./... && golangci-lint run ./...
